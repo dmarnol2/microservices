@@ -18,64 +18,46 @@ import javax.servlet.http.*;
  */
 @SuppressWarnings("serial")
 public class Lab5Servlet extends HttpServlet {
+	HttpSession session;
 	
 	public void init(ServletConfig sc) throws ServletException {
 		super.init(sc);
 	}
+	
+	/*REFACTOR ORIGINAL SERVLET:
+	 * 1. REMOVE SINGLETON - DONE
+	 * 2. MAKE NETWORK CALLS TO LAB5CALC OR LAB5MAP
+	 * 3. DETERMINE LIGHTWEIGHT FORMAT TO RETURN DATA TO SERVLET
+	 * 3a. CONSIDER HTTP SESSIONS
+	 * 4. RENDER RESPONSE WITH SERVLET
+	 */
 
 	/* (non-Javadoc)
 	 * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	public void doGet(HttpServletRequest req, HttpServletResponse res)
 			throws ServletException, IOException {
+		session = req.getSession();
+		if (session.getAttribute("flag").equals("1")) {
+			req.getRequestDispatcher("/lab5map").forward(req, res);
+		}
+		
+		
 		StringBuffer pageBuf = new StringBuffer();
-		double grade;
-		String year = req.getParameter("year");
-		String subject = req.getParameter("subject");
-
-		if (year != null && !year.trim().isEmpty()) {
-			pageBuf.append("<br/>Year: " + year);
-		}
-		if (subject != null && !subject.trim().isEmpty()) {
-			pageBuf.append("<br/>Subject: " + subject);
-		}
-
-		Lab5Calc calc = null;
-		try {
-			calc = new Lab5Calc();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		Lab5Map map = null;
-		try {
-			map = new Lab5Map();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		/*try {
-			service = Lab5Service.getService();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		*/
-		//if (service == null) {
-		//	pageBuf.append("\tSERVICE NOT AVAILABLE");
-		//} else {
-			grade = calc.calculateGrade(year, subject);
-			pageBuf.append("\n\t<br/>Grade: " + grade);
-			pageBuf.append("\n\t<br/>Letter: " + map.mapToLetterGrade(grade));
-		//}
-
-		// some generic setup - our content type and output stream
-		res.setContentType("text/html");
+		pageBuf.append("\n\t<br/>Year: " + session.getAttribute("year"));
+		pageBuf.append("\n\t<br/>Subject: " + session.getAttribute("subject"));
+		pageBuf.append("\n\t<br/>Grade: " + session.getAttribute("grade"));
+		pageBuf.append("\n\t<br/>Letter: " + session.getAttribute("letter"));
+		
 		PrintWriter out = res.getWriter();
-
 		out.println(pageBuf.toString());
+		
 	}
+	
 	public void doPost(HttpServletRequest req, HttpServletResponse res)
 			throws ServletException, IOException {
-		doGet(req, res);
-	}
+		session=req.getSession();
+		session.setAttribute("flag", "1");
+		req.getRequestDispatcher("/lab5calc").forward(req, res);
+		}
 }

@@ -54,6 +54,7 @@
       <fileset dir="${properties.dir}"/>
     </copy>
   	<copy file="WebContent/index.html" tofile="${build.home}/index.html"/>
+    <copy file ="${resources.dir}/lab5given.sql" tofile="${dbfile.dir}/lab5given.sql"/>
     <copy file="web.xml" tofile="${build.home}/WEB-INF/web.xml"/>
   </target>
 

@@ -18,6 +18,10 @@
   <servlet>
     <servlet-name>Lab5Calc</servlet-name>
     <servlet-class>edu.asupoly.ser422.lab5.Lab5Calc</servlet-class>
+    <init-param>
+                <param-name>dbfile</param-name>
+                <param-value>C:\eclipse-workspace\lab2_dmarnol2\resources\lab2.xml</param-value>
+    </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>
   <servlet-mapping>
