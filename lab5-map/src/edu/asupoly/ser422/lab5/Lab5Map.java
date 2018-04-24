@@ -55,7 +55,7 @@ public class Lab5Map extends HttpServlet {
 		
 		res.setContentType("application/json");
 		res.setCharacterEncoding("UTF-8");
-		obj.put("Letter:",grade);
+		obj.put("letter", letter);
 		out.print(obj);
 
 	}

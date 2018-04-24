@@ -33,7 +33,7 @@ public class Lab5Calc extends HttpServlet{
 		private String __jdbcUser   = null;
 		private String __jdbcPasswd = null;
 		private String __jdbcDriver = null;
-		HttpSession session;
+		
 		
 		//private static String _filename = null;
 
@@ -45,14 +45,11 @@ public class Lab5Calc extends HttpServlet{
 		public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
 			PrintWriter out = res.getWriter();
 			JSONObject obj = new JSONObject();
-
-			session = req.getSession();
-			String year = req.getParameter("year");
-			String subject = req.getParameter("subject");
-			session.setAttribute("year", year);
-			session.setAttribute("subject", subject);
-			obj.put("year", year);
-			obj.put("subject", subject);
+			int year = 1989;
+			String subject = "math";
+			//String year = req.getParameter("year");
+			//String subject = req.getParameter("subject");
+			
 			
 			Properties props = new Properties();
 			try {
@@ -156,13 +153,15 @@ public class Lab5Calc extends HttpServlet{
 
 			res.setContentType("application/json");
 			res.setCharacterEncoding("UTF-8");
-			obj.put("grade", grade);
+			obj.put("year", year);
+			obj.put("subject", subject);
+			obj.put("grade", "its working");
 			out.print(obj);
 
 		} // end doPost
 
 		public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException{
 			doPost(req, res);
-			
+
     	} // end doGet
     } // end Lab5Calc

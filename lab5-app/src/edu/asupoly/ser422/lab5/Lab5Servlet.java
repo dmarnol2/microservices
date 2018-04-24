@@ -26,6 +26,9 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
 import sun.net.www.http.HttpClient;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
  * @author Kevin Gary
@@ -76,12 +79,11 @@ public class Lab5Servlet extends HttpServlet {
         nvps.add(new BasicNameValuePair("subject", subject));
         //httpPost.setEntity(new UrlEncodedFormEntity(nvps));
         CloseableHttpResponse response = httpclient.execute(post);
-
+        String calcContent;
         try {
             System.out.println(response.getStatusLine());
             HttpEntity entity = response.getEntity();
-            String content =  EntityUtils.toString(entity);
-            pageBuf.append("\n\t<br/>Letter: " + content);
+            calcContent =  EntityUtils.toString(entity);
             EntityUtils.consume(entity);
             } finally {
             response.close();
@@ -94,12 +96,11 @@ public class Lab5Servlet extends HttpServlet {
         nvps2.add(new BasicNameValuePair("subject", subject));
         //httpPost.setEntity(new UrlEncodedFormEntity(nvps));
         CloseableHttpResponse response2 = httpclient.execute(post2);
-
+        String mapContent;
         try {
             System.out.println(response2.getStatusLine());
             HttpEntity entity2 = response2.getEntity();
-            String content2 =  EntityUtils.toString(entity2);
-            pageBuf.append("\n\t<br/>Letter: " + content2);
+            mapContent =  EntityUtils.toString(entity2);
             EntityUtils.consume(entity2);
 		    } finally {
             response2.close();
@@ -107,7 +108,26 @@ public class Lab5Servlet extends HttpServlet {
 
             httpclient.close();
 
-        
+        JSONParser parser = new JSONParser();
+        JSONParser parser2 = new JSONParser();
+		JSONObject jsonCalc = null;
+		JSONObject jsonMap = null;
+		try {
+			jsonCalc = (JSONObject) parser.parse(calcContent);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			jsonMap = (JSONObject) parser2.parse(mapContent);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		pageBuf.append("\n\t<br/>Year: " + jsonCalc.get("year"));
+		pageBuf.append("\n\t<br/>Subject: " + jsonCalc.get("subject"));
+		pageBuf.append("\n\t<br/>Grade: " + jsonCalc.get("grade"));
+		pageBuf.append("\n\t<br/>Letter: " + jsonMap.get("letter"));
         PrintWriter out = res.getWriter();
 		out.println(pageBuf.toString());
 
