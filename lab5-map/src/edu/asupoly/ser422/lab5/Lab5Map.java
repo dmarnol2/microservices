@@ -14,8 +14,9 @@ import javax.servlet.http.HttpSession;
 
 import org.json.simple.JSONObject;
 
+
 public class Lab5Map extends HttpServlet {
-	HttpSession session;
+	
 
 	public void init(ServletConfig sc) throws ServletException {
 
@@ -23,13 +24,13 @@ public class Lab5Map extends HttpServlet {
 	} // end method
 
 	public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
-		session = req.getSession();
+		
 		String letter = "E";
 		PrintWriter out = res.getWriter();
 		JSONObject obj = new JSONObject();
 
 		
-		double grade = (double) session.getAttribute("grade");
+		double grade =90;
 				
 		if (grade >= 60.0)
 			letter = "D";
@@ -51,17 +52,12 @@ public class Lab5Map extends HttpServlet {
 			letter = "A+";
 		if (grade < 0.0)
 			letter = "I";
-		session.setAttribute("flag", "0");
-		session.setAttribute("letter", letter);
-
+		
 		res.setContentType("application/json");
 		res.setCharacterEncoding("UTF-8");
-		
-		obj.put("letter", letter);
+		obj.put("Letter:",grade);
 		out.print(obj);
-		
-		res.getWriter().toString();
-		
+
 	}
 	public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
 		doPost(req,res);

@@ -45,16 +45,10 @@ public class Lab5Calc extends HttpServlet{
 		public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
 			PrintWriter out = res.getWriter();
 			JSONObject obj = new JSONObject();
-			
-			
-			
-			
-		//public double calculateGrade(String yr, String sub) {
+
 			session = req.getSession();
 			String year = req.getParameter("year");
 			String subject = req.getParameter("subject");
-			//String year = yr;
-			//String subject = sub;
 			session.setAttribute("year", year);
 			session.setAttribute("subject", subject);
 			obj.put("year", year);
@@ -108,8 +102,8 @@ public class Lab5Calc extends HttpServlet{
 				
 				int iyear = 0;
 				String query;
-				if (year != null && !year.trim().isEmpty()) {
-					iyear = Integer.parseInt(year);
+				if (req.getParameter("year") != null && !req.getParameter("year").trim().isEmpty()) {
+					iyear = Integer.parseInt(req.getParameter("year"));
 				}
 				if (iyear <=4 && iyear >= 1 && subject != null && !subject.trim().isEmpty()) {
 					query = queryYearSubject + year + " AND subject='" + subject + "'";
@@ -159,28 +153,16 @@ public class Lab5Calc extends HttpServlet{
 					t.getMessage();
 				}
 			}
-			//NEW BELOW
-			//return grade;
-			
-		
-		
-		res.setContentType("application/json");
-		res.setCharacterEncoding("UTF-8");
-		session.setAttribute("grade", grade);
-		
-		obj.put("grade", grade);
-		out.print(obj);
-		//out.write(obj.toJSONString());
-		
-		
-		
-	} //
-		
 
-		public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
-			//doPost(req, res);
-			console.log("hey");
+			res.setContentType("application/json");
+			res.setCharacterEncoding("UTF-8");
+			obj.put("grade", grade);
+			out.print(obj);
+
+		} // end doPost
+
+		public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException{
+			doPost(req, res);
 			
-		}
-	
-		}
+    	} // end doGet
+    } // end Lab5Calc
