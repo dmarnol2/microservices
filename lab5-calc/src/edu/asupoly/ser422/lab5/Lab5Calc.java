@@ -45,11 +45,8 @@ public class Lab5Calc extends HttpServlet{
 		public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
 			PrintWriter out = res.getWriter();
 			JSONObject obj = new JSONObject();
-			int year = 1989;
-			String subject = "math";
-			//String year = req.getParameter("year");
-			//String subject = req.getParameter("subject");
-			
+			String year = req.getParameter("year");
+			String subject = req.getParameter("subject");
 			
 			Properties props = new Properties();
 			try {
@@ -150,12 +147,12 @@ public class Lab5Calc extends HttpServlet{
 					t.getMessage();
 				}
 			}
-
+			String gradeVal = Double.toString(grade);
 			res.setContentType("application/json");
 			res.setCharacterEncoding("UTF-8");
-			obj.put("year", year);
-			obj.put("subject", subject);
-			obj.put("grade", "its working");
+			//obj.put("year", year);
+			//obj.put("subject", subject);
+			obj.put("grade", gradeVal);
 			out.print(obj);
 
 		} // end doPost

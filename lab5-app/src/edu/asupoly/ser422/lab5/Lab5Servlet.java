@@ -47,22 +47,12 @@ public class Lab5Servlet extends HttpServlet {
 	 */
 	public void doGet(HttpServletRequest req, HttpServletResponse res)
 			throws ServletException, IOException {
-				 System.out.println("Made it to step2");
-		session = req.getSession();
-		
-		StringBuffer pageBuf = new StringBuffer();
-		pageBuf.append("\n\t<br/>Year: " + session.getAttribute("year"));
-		pageBuf.append("\n\t<br/>Subject: " + session.getAttribute("subject"));
-		pageBuf.append("\n\t<br/>Grade: " + session.getAttribute("grade"));
-		pageBuf.append("\n\t<br/>Letter: " + session.getAttribute("letter"));
-		
-		PrintWriter out = res.getWriter();
-		out.println(pageBuf.toString());
-		
-	}
+				doPost(req,res);
+			}
 	
 	public void doPost(HttpServletRequest req, HttpServletResponse res)
 				throws ServletException, IOException {
+
 		StringBuffer pageBuf = new StringBuffer();
 		String year= req.getParameter("year");
 		String subject = req.getParameter("subject");
@@ -74,27 +64,38 @@ public class Lab5Servlet extends HttpServlet {
 	   
 	    CloseableHttpClient httpclient = HttpClients.createDefault();
 	    HttpPost post = new HttpPost(calcUrl);
-	    List <NameValuePair> nvps = new ArrayList <NameValuePair>();
-        nvps.add(new BasicNameValuePair("year", year));
-        nvps.add(new BasicNameValuePair("subject", subject));
-        //httpPost.setEntity(new UrlEncodedFormEntity(nvps));
+	    ArrayList <NameValuePair> vals = new ArrayList <NameValuePair>();
+        vals.add(new BasicNameValuePair("year", year));
+        vals.add(new BasicNameValuePair("subject", subject));
+        
+        post.setEntity(new UrlEncodedFormEntity(vals));
         CloseableHttpResponse response = httpclient.execute(post);
         String calcContent;
+        String grade="";
+        JSONParser parser = new JSONParser();
+        JSONObject jsonCalc = null;
+
         try {
             System.out.println(response.getStatusLine());
             HttpEntity entity = response.getEntity();
             calcContent =  EntityUtils.toString(entity);
-            EntityUtils.consume(entity);
-            } finally {
-            response.close();
-        } // end try
+            	try {
+					jsonCalc = (JSONObject) parser.parse(calcContent);
+					grade = (String) jsonCalc.get("grade");
+					} catch (ParseException e) {
+					e.printStackTrace();
+					}
+            		EntityUtils.consume(entity);
+            		} finally {
+            		response.close();
+        		} // end try
 
         //network call to lab5map
         HttpPost post2 = new HttpPost(mapUrl);
-	    List <NameValuePair> nvps2 = new ArrayList <NameValuePair>();
-        nvps2.add(new BasicNameValuePair("year", year));
-        nvps2.add(new BasicNameValuePair("subject", subject));
-        //httpPost.setEntity(new UrlEncodedFormEntity(nvps));
+	    //List <NameValuePair> nvps2 = new ArrayList <NameValuePair>();
+        vals.add(new BasicNameValuePair("grade", grade));
+        //nvps2.add(new BasicNameValuePair("subject", subject));
+        post2.setEntity(new UrlEncodedFormEntity(vals));
         CloseableHttpResponse response2 = httpclient.execute(post2);
         String mapContent;
         try {
@@ -108,25 +109,18 @@ public class Lab5Servlet extends HttpServlet {
 
             httpclient.close();
 
-        JSONParser parser = new JSONParser();
         JSONParser parser2 = new JSONParser();
-		JSONObject jsonCalc = null;
-		JSONObject jsonMap = null;
-		try {
-			jsonCalc = (JSONObject) parser.parse(calcContent);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        JSONObject jsonMap = null;
+		
 		try {
 			jsonMap = (JSONObject) parser2.parse(mapContent);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		pageBuf.append("\n\t<br/>Year: " + jsonCalc.get("year"));
-		pageBuf.append("\n\t<br/>Subject: " + jsonCalc.get("subject"));
-		pageBuf.append("\n\t<br/>Grade: " + jsonCalc.get("grade"));
+		pageBuf.append("\n\t<br/>Year: " + year);//jsonCalc.get("year"));
+		pageBuf.append("\n\t<br/>Subject: " + subject);//jsonCalc.get("subject"));
+		pageBuf.append("\n\t<br/>Grade: " + grade); //jsonCalc.get("grade"));
 		pageBuf.append("\n\t<br/>Letter: " + jsonMap.get("letter"));
         PrintWriter out = res.getWriter();
 		out.println(pageBuf.toString());

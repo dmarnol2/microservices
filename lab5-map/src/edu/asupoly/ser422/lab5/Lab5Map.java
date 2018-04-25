@@ -28,9 +28,10 @@ public class Lab5Map extends HttpServlet {
 		String letter = "E";
 		PrintWriter out = res.getWriter();
 		JSONObject obj = new JSONObject();
+		String gradeInput = req.getParameter("grade");
 
 		
-		double grade =90;
+		double grade = Double.parseDouble(gradeInput);
 				
 		if (grade >= 60.0)
 			letter = "D";
