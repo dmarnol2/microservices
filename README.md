@@ -1,13 +1,16 @@
 # microservices
 This project took a monolithic program and broke it into 3 components. A servlet and two microservices. The microservices are unaware of each other. The servlet takes in data and forwards that data to the Lab5calc microservice which interacts with the database and returns numerical grade to servlet in JSON format. Servlet passes grade to lab5map microservice which then returns a letter grade in json format. Servlet parses data and displays to user.
+
 Apache HTTPClient 4.5 is used to make calls to microservices.
 JSON-Simple is used to parse json.
 Service is lightweight only passing data needed by the microservices.
+
 Quick Start
 Pull both Docker images using:
 $ docker pull dmarnold/lab5calc
 $ docker pull dmarnold/lab5map
 or build locally using dockerfile following the steps provided in next section.
+
 Run both Docker images using: (external ports are preconfigured as init params in lab5-app web.xml as 8001 for lab5 calc, and 8002 for lab5map. If changing ports, be sure to change them in both the following run commands and the lab5-app web.xml)
 $ docker run -p 8001:8080 dmarnold/lab5calc
 $ docker run -p 8002:8080 dmarnold/lab5map
